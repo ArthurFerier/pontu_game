@@ -41,6 +41,7 @@ class MyAgent(AlphaBetaAgent):
   representing the utility function of the board.
   """
   def evaluate(self, state):
+    """
     sum=0
     id=self.id
     if id:
@@ -49,18 +50,53 @@ class MyAgent(AlphaBetaAgent):
       id=1
     for (xpawn,ypawn) in state.cur_pos[id]:
 
-      if xpawn > state.size-1:#check if pawn at horizontal right border
+      if xpawn > state.size-1: # check if pawn at horizontal right border
         if not state.h_bridges[xpawn][ypawn]:
           sum+=1
-        if xpawn > 0:#check if pawn at horizontal left border
+        if xpawn > 0: # check if pawn at horizontal left border
           if not state.h_bridges[xpawn-1][ypawn]:
             sum += 1
 
-      if ypawn > state.size - 1:#check if paw at vertical down border
+      if ypawn > state.size - 1: # check if paw at vertical down border
         if not state.v_bridges[xpawn][ypawn]:
           sum+=1
-        if ypawn > 0:#check if pawn at vertical up border
+        if ypawn > 0: # check if pawn at vertical up border
           if not state.v_bridges[xpawn][ypawn-1]:
             sum += 1
-    return sum
+    return sum"""
+
+    # todo : can we move the two matricies in the definition of the class ?
+    # setting False on the matricies when the pawn is next to a border
+    horizontal_bridges = []
+    for line in state.h_bridges:
+      line = line.insert(0, False)
+      line = line.insert(len(line), False)
+      horizontal_bridges.append(line)
+
+    vertical_bridges = [[False for i in range(state.size - 1)]]
+    for column in state.v_bridges:
+      vertical_bridges.append(column)
+    vertical_bridges.append([False for i in range(state.size - 1)])
+
+    sum = 0
+    id = 1 - self.id
+    max_coord = state.size-1
+    for (x_pawn, y_pawn) in state.cur_pos[id]:
+      # upper bridge
+      if vertical_bridges[x_pawn][y_pawn]:
+        sum += 1
+      # down bridge
+      if vertical_bridges[x_pawn+1][y_pawn]:
+        sum += 1
+      # left bridge
+      if horizontal_bridges[x_pawn][y_pawn]:
+        sum += 1
+      # right bridge
+      if horizontal_bridges[x_pawn][y_pawn+1]:
+        sum += 1
+
+      return sum
+
+
+
 
