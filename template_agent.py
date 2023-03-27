@@ -23,7 +23,8 @@ class MyAgent(AlphaBetaAgent):
     successor_list=[]
     for act in state.get_current_player_actions():
       state_copy=state.copy()
-      successor_list.append((act,state_copy.apply_action(act)))
+      state_copy.apply_action(act)
+      successor_list.append((act, state_copy))
     return successor_list
 
   """
@@ -31,7 +32,7 @@ class MyAgent(AlphaBetaAgent):
   search has to stop and false otherwise.
   """
   def cutoff(self, state, depth):
-    if state.game_over() and depth>=1:
+    if state.game_over() or depth>=1:
       return True
     return False
 
@@ -75,26 +76,26 @@ class MyAgent(AlphaBetaAgent):
       line_updated.append(False)
       horizontal_bridges.append(line_updated)
 
-    vertical_bridges = [[False for _ in range(state.size - 1)]]
+    vertical_bridges = [[False for _ in range(state.size)]]
     for column in state.v_bridges:
       vertical_bridges.append(column)
-    vertical_bridges.append([False for _ in range(state.size - 1)])
+    vertical_bridges.append([False for _ in range(state.size)])
 
     sum = 0
     id = 1 - self.id
     max_coord = state.size-1
     for (x_pawn, y_pawn) in state.cur_pos[id]:
       # upper bridge
-      if vertical_bridges[x_pawn][y_pawn]:
+      if not vertical_bridges[x_pawn][y_pawn]:
         sum += 1
       # down bridge
-      if vertical_bridges[x_pawn+1][y_pawn]:
+      if not vertical_bridges[x_pawn+1][y_pawn]:
         sum += 1
       # left bridge
-      if horizontal_bridges[x_pawn][y_pawn]:
+      if not horizontal_bridges[x_pawn][y_pawn]:
         sum += 1
       # right bridge
-      if horizontal_bridges[x_pawn][y_pawn+1]:
+      if not horizontal_bridges[x_pawn][y_pawn+1]:
         sum += 1
 
     return sum
