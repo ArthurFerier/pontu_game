@@ -86,16 +86,16 @@ class MyAgent(AlphaBetaAgent):
     max_coord = state.size-1
     for (x_pawn, y_pawn) in state.cur_pos[id]:
       # upper bridge
-      if not vertical_bridges[x_pawn][y_pawn]:
+      if not vertical_bridges[y_pawn][x_pawn]:
         sum += 1
       # down bridge
-      if not vertical_bridges[x_pawn+1][y_pawn]:
+      if not vertical_bridges[y_pawn+1][x_pawn]:
         sum += 1
       # left bridge
-      if not horizontal_bridges[x_pawn][y_pawn]:
+      if not horizontal_bridges[y_pawn][x_pawn]:
         sum += 1
       # right bridge
-      if not horizontal_bridges[x_pawn][y_pawn+1]:
+      if not horizontal_bridges[y_pawn][x_pawn+1]:
         sum += 1
 
     return sum
