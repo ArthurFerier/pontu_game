@@ -69,14 +69,16 @@ class MyAgent(AlphaBetaAgent):
     # setting False on the matricies when the pawn is next to a border
     horizontal_bridges = []
     for line in state.h_bridges:
-      line = line.insert(0, False)
-      line = line.insert(len(line), False)
-      horizontal_bridges.append(line)
+      line_updated = [False]
+      for boolean in line:
+        line_updated.append(boolean)
+      line_updated.append(False)
+      horizontal_bridges.append(line_updated)
 
-    vertical_bridges = [[False for i in range(state.size - 1)]]
+    vertical_bridges = [[False for _ in range(state.size - 1)]]
     for column in state.v_bridges:
       vertical_bridges.append(column)
-    vertical_bridges.append([False for i in range(state.size - 1)])
+    vertical_bridges.append([False for _ in range(state.size - 1)])
 
     sum = 0
     id = 1 - self.id
@@ -95,7 +97,7 @@ class MyAgent(AlphaBetaAgent):
       if horizontal_bridges[x_pawn][y_pawn+1]:
         sum += 1
 
-      return sum
+    return sum
 
 
 
