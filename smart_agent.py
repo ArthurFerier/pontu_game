@@ -106,6 +106,8 @@ class MyAgent(AlphaBetaAgent):
 
 
   def evaluate(self, state):
+    # In case one player cannot move any elves, because another elf is blocking the move,
+    # this player has not yet lost. He must only remove a bridge from the board without moving any elves.
     # Set the weights for different factors that affect the score
     weights = [5, 3, 1, 0.5]
 
@@ -121,6 +123,12 @@ class MyAgent(AlphaBetaAgent):
     # Compute the score based on the difference in reachable positions for each weight
     for j in range(len(weights)):
       score += (player_reachable[j] - opponent_reachable[j]) * weights[j]
+
+    for i in range(3):
+      if state.is_pawn_blocked(1 - self.id, i):
+        score += 1
+      if state.is_pawn_blocked(self.id, i):
+        score -= 1
 
     # Return the final score
     return score

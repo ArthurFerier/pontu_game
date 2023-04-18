@@ -21,11 +21,6 @@ if __name__ == '__main__':
     display_gui = True
 
   initial_state = PontuState()
-  initial_state.cur_pos[0][0] = (4, 0)
-  initial_state.cur_pos[0][1] = (3, 0)
-  initial_state.cur_pos[0][2] = (4, 1)
-  initial_state.h_bridges[4][0] = False
-  initial_state.v_bridges[3][0] = False
   if first is not None:
     initial_state.cur_player = first
   agent0 = getattr(__import__(agent0), 'MyAgent')()
