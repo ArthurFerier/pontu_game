@@ -31,18 +31,6 @@ class MyAgent(AlphaBetaAgent):
       state_copy.apply_action(act)
       successor_list.append((act, state_copy))
 
-    #evaluate successors
-    successor_eval = []
-    for successor in successor_list:
-      evaluation=self.evaluate(successor[1])
-      successor_eval.append(evaluation)
-
-    #sort them based on evaluation
-    successor_eval_pairs = zip(successor_list, successor_eval)
-    successor_eval_pairs = sorted(successor_eval_pairs, key=lambda x: x[1])
-    successor_list , _ = zip(*successor_eval_pairs)
-
-    successor_list[0:int(len(successor_list)*25/100)]
 
     return successor_list
 

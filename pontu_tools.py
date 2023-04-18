@@ -22,7 +22,7 @@ def play_game(init_state, names, players, total_time, display_gui):
     # loop until the game is over
 
     while not state.game_over():
-        time.sleep(1)
+        #time.sleep(1)
         cur_player = state.get_cur_player()
         timer_stop = [False]
         if display_gui:
