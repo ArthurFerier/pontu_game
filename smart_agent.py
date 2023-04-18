@@ -1,5 +1,5 @@
 from agent import AlphaBetaAgent
-import minimax
+import minimax, copy
 
 """
 Agent skeleton. Fill in the gaps.
@@ -9,6 +9,11 @@ class MyAgent(AlphaBetaAgent):
   """
   This is the skeleton of an agent to play the Tak game.
   """
+
+  def __init__(self):
+    self.time_left = None
+    self.last_action = None
+
   def get_action(self, state, last_action, time_left):
     self.last_action = last_action
     self.time_left = time_left
@@ -42,7 +47,7 @@ class MyAgent(AlphaBetaAgent):
   representing the utility function of the board.
   """
 
-  def reachable(self, state, pos, max_moves):
+  def reachable(self, state, pos, other_pos, max_moves):
     """
     pos = list of pawn positions
     max_moves = max number of moves to evaluate
@@ -62,24 +67,39 @@ class MyAgent(AlphaBetaAgent):
     vertical_bridges.append([False for _ in range(state.size)])
 
 
-    explored_pos = [[]]*(max_moves+1)
-    explored_pos[0]=pos
-    for i in range(1, max_moves+2):
-      for (x_pawn, y_pawn) in pos[i-1]:
-        # upper bridge
-        if vertical_bridges[y_pawn][x_pawn]:
-          explored_pos[i].append((x_pawn, y_pawn-1))
-        # down bridge
-        if vertical_bridges[y_pawn + 1][x_pawn]:
-          explored_pos[i].append((x_pawn, y_pawn+1))
-        # left bridge
-        if horizontal_bridges[y_pawn][x_pawn]:
-          explored_pos[i].append((x_pawn-1, y_pawn))
-        # right bridge
-        if horizontal_bridges[y_pawn][x_pawn + 1]:
-          explored_pos[i].append((x_pawn+1, y_pawn))
+    explored_pos_precedent = set()
+    explored_pos_global = set()
+    explored_pos_list = []
+    for position in pos:
+      explored_pos_global.add(position)
+      explored_pos_precedent.add(position)
+    for position in other_pos:
+      explored_pos_global.add(position)
 
-    return [len(explored_pos[i]) for i in range(1,max_moves+2)]
+    for _ in range(max_moves):
+      local_explored_pos = set()
+      for (x_pawn, y_pawn) in explored_pos_precedent:
+        # upper bridge
+        if vertical_bridges[y_pawn][x_pawn] and (x_pawn, y_pawn-1) not in explored_pos_global:
+          local_explored_pos.add((x_pawn, y_pawn-1))
+          explored_pos_global.add((x_pawn, y_pawn-1))
+        # down bridge
+        if vertical_bridges[y_pawn + 1][x_pawn] and (x_pawn, y_pawn+1) not in explored_pos_global:
+          local_explored_pos.add((x_pawn, y_pawn + 1))
+          explored_pos_global.add((x_pawn, y_pawn + 1))
+        # left bridge
+        if horizontal_bridges[y_pawn][x_pawn] and (x_pawn-1, y_pawn) not in explored_pos_global:
+          local_explored_pos.add((x_pawn-1, y_pawn))
+          explored_pos_global.add((x_pawn-1, y_pawn))
+        # right bridge
+        if horizontal_bridges[y_pawn][x_pawn+1] and (x_pawn+1, y_pawn) not in explored_pos_global:
+          local_explored_pos.add((x_pawn+1, y_pawn))
+          explored_pos_global.add((x_pawn+1, y_pawn))
+
+      explored_pos_precedent = copy.deepcopy(local_explored_pos)
+      explored_pos_list.append(len(local_explored_pos))
+
+    return explored_pos_list
 
 
 
@@ -94,8 +114,8 @@ class MyAgent(AlphaBetaAgent):
     opponent_pawns = state.cur_pos[1 - self.id]
 
     #Calculate numbers of reachable positions per moves
-    player_reachable = self.reachable(state, player_pawns, len(weights))
-    opponent_reachable =self.reachable(state, opponent_pawns, len(weights))
+    player_reachable = self.reachable(state, player_pawns, opponent_pawns, len(weights))
+    opponent_reachable =self.reachable(state, opponent_pawns, player_pawns, len(weights))
 
     score = 0
     # Compute the score based on the difference in reachable positions for each weight
