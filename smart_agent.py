@@ -30,6 +30,20 @@ class MyAgent(AlphaBetaAgent):
       state_copy=state.copy()
       state_copy.apply_action(act)
       successor_list.append((act, state_copy))
+
+    #evaluate successors
+    successor_eval = []
+    for successor in successor_list:
+      evaluation=self.evaluate(successor[1])
+      if evaluation < 0:
+        successor_list.remove(successor)
+      else:
+        successor_eval.append(evaluation)
+
+    #sort them based on evaluation
+    successor_eval_pairs = zip(successor_list, successor_eval)
+    successor_eval_pairs = sorted(successor_eval_pairs, key=lambda x: x[1])
+    successor_list , _ = zip(*successor_eval_pairs)
     return successor_list
 
   """
@@ -117,7 +131,7 @@ class MyAgent(AlphaBetaAgent):
 
     #Calculate numbers of reachable positions per moves
     player_reachable = self.reachable(state, player_pawns, opponent_pawns, len(weights))
-    opponent_reachable =self.reachable(state, opponent_pawns, player_pawns, len(weights))
+    opponent_reachable = self.reachable(state, opponent_pawns, player_pawns, len(weights))
 
     score = 0
     # Compute the score based on the difference in reachable positions for each weight
