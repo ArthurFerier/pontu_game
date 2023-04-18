@@ -41,64 +41,6 @@ class MyAgent(AlphaBetaAgent):
   The evaluate function must return an integer value
   representing the utility function of the board.
   """
-  def evaluate(self, state):
-    """
-    sum=0
-    id=self.id
-    if id:
-      id=0
-    else:
-      id=1
-    for (xpawn,ypawn) in state.cur_pos[id]:
-
-      if xpawn > state.size-1: # check if pawn at horizontal right border
-        if not state.h_bridges[xpawn][ypawn]:
-          sum+=1
-        if xpawn > 0: # check if pawn at horizontal left border
-          if not state.h_bridges[xpawn-1][ypawn]:
-            sum += 1
-
-      if ypawn > state.size - 1: # check if paw at vertical down border
-        if not state.v_bridges[xpawn][ypawn]:
-          sum+=1
-        if ypawn > 0: # check if pawn at vertical up border
-          if not state.v_bridges[xpawn][ypawn-1]:
-            sum += 1
-    return sum"""
-
-    # todo : can we move the two matricies in the definition of the class ?
-    # setting False on the matricies when the pawn is next to a border
-    horizontal_bridges = []
-    for line in state.h_bridges:
-      line_updated = [False]
-      for boolean in line:
-        line_updated.append(boolean)
-      line_updated.append(False)
-      horizontal_bridges.append(line_updated)
-
-    vertical_bridges = [[False for _ in range(state.size)]]
-    for column in state.v_bridges:
-      vertical_bridges.append(column)
-    vertical_bridges.append([False for _ in range(state.size)])
-
-    sum = 0
-    id = 1 - self.id
-    for (x_pawn, y_pawn) in state.cur_pos[id]:
-      # upper bridge
-      if not vertical_bridges[y_pawn][x_pawn]:
-        sum += 1
-      # down bridge
-      if not vertical_bridges[y_pawn+1][x_pawn]:
-        sum += 1
-      # left bridge
-      if not horizontal_bridges[y_pawn][x_pawn]:
-        sum += 1
-      # right bridge
-      if not horizontal_bridges[y_pawn][x_pawn+1]:
-        sum += 1
-
-    return sum
-
 
   def reachable(self, state, pos, max_moves):
     """
