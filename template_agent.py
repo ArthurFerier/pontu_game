@@ -125,19 +125,19 @@ class MyAgent(AlphaBetaAgent):
     for i in range(1,max_moves+2):
       for (x_pawn, y_pawn) in pos[i-1]:
         # upper bridge
-        if not vertical_bridges[y_pawn][x_pawn]:
-          explored_pos[i].append()
+        if vertical_bridges[y_pawn][x_pawn]:
+          explored_pos[i].append((x_pawn, y_pawn-1))
         # down bridge
-        if not vertical_bridges[y_pawn + 1][x_pawn]:
-          sum += 1
+        if vertical_bridges[y_pawn + 1][x_pawn]:
+          explored_pos[i].append((x_pawn, y_pawn+1))
         # left bridge
-        if not horizontal_bridges[y_pawn][x_pawn]:
-          sum += 1
+        if horizontal_bridges[y_pawn][x_pawn]:
+          explored_pos[i].append((x_pawn-1, y_pawn))
         # right bridge
-        if not horizontal_bridges[y_pawn][x_pawn + 1]:
-          sum += 1
+        if horizontal_bridges[y_pawn][x_pawn + 1]:
+          explored_pos[i].append((x_pawn+1, y_pawn))
 
-    return [len(explored_pos[i]) for i in range(1,max_moves+2)]#modify
+    return [len(explored_pos[i]) for i in range(1,max_moves+2)]
 
 
 
